@@ -26,8 +26,6 @@ router.post('/', (req, res, next) => {
   } = req.body;
   const userId = req.user._id;
 
-  console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', req.user)
-
   /***** Never trust users - validate input *****/
   const requiredFields = ['firstName', 'lastName', 'mobilePhoneNumber', 'emailAddress'];
   for (let field of requiredFields) {
@@ -38,6 +36,13 @@ router.post('/', (req, res, next) => {
     }
   }
 
+  //validation needed: 
+  //  homePhoneNumber: required to be 10 digits, no 1 in front (trim that off), no whitespace
+  //  mobilePhoneNumber: see above
+  //  emailAddress: Must have @ sign, must end with valid tld
+  //  lastContactedDate: Must be a date
+  //  scheduledEvents: Not sure yet
+
   const newLead = { 
     firstName, 
     lastName, 
@@ -47,8 +52,6 @@ router.post('/', (req, res, next) => {
     lastContactedDate,
     scheduledEvents,
     userId  };
-
-    console.log(newLead)
 
   // if (newNote.folderId === '') {
   //   delete newNote.folderId;
