@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
+const validator = require('validator');
 
 const Lead = require('../models/leads');
 const ScheduledEvent = require('../models/scheduled-events');
@@ -12,6 +13,25 @@ const router = express.Router();
 const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
 
 router.use('/', jwtAuth);
+
+function validatePhone(phoneNumber) {
+  //expected object: { 
+  // firstName, lastName, homePhoneNumber, mobilePhoneNumber, emailAddress,
+  // lastContactedDate, scheduledEvents, userId  }
+  let newPhoneNumber = '';
+
+  if (phoneNumber[0] === '1') {
+    newPhoneNumber = phoneNumber.slice(1);
+  } else {
+    newPhoneNumber = phoneNumber;
+  }
+
+  if( newPhoneNumber.length !== 10 ) {
+    return false;
+  }
+
+  return true;
+}
 
 /* ========== GET/READ ALL ITEMS ========== */
 router.get('/', (req, res, next) => {
@@ -100,9 +120,9 @@ router.post('/', (req, res, next) => {
   }
 
   //validation needed: 
-  //  homePhoneNumber: required to be 10 digits, no 1 in front (trim that off), no whitespace
-  //  mobilePhoneNumber: see above
-  //  emailAddress: Must have @ sign, must end with valid tld
+  //  DONE homePhoneNumber: required to be 10 digits, no 1 in front (trim that off), no whitespace
+  //  DONE mobilePhoneNumber: see above
+  //  DONE emailAddress: Must have @ sign, must end with valid tld
   //  lastContactedDate: Must be a date
   //  scheduledEvents: Not sure yet
 
@@ -115,10 +135,16 @@ router.post('/', (req, res, next) => {
     lastContactedDate,
     scheduledEvents,
     userId  };
-
-  // if (newNote.folderId === '') {
-  //   delete newNote.folderId;
-  // }
+  
+  if (!validator.isEmail(newLead.emailAddress)) {
+    const err = new Error('Invalid email address');
+    err.status = 400;
+    return next(err);
+  } else if (!validatePhone(homePhoneNumber) || !validatePhone(mobilePhoneNumber)) {
+    const err = new Error('Invalid phone number');
+    err.status = 400;
+    return next(err);
+  }
 
   Lead.create(newLead)
     .then(result => {
