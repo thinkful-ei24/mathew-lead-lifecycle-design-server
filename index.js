@@ -23,7 +23,7 @@ app.use(
 );
 
 app.get('/api/cheeses', (req, res, next) => {
-  res.json(JSON.stringify([
+  res.json([
     'Bath Blue',
     'Barkham Blue',
     'Buxton Blue',
@@ -41,7 +41,7 @@ app.get('/api/cheeses', (req, res, next) => {
     'Stilton',
     'Blue Wensleydale',
     'Yorkshire Blue'
-  ]));
+  ]);
   next();
 });
 
