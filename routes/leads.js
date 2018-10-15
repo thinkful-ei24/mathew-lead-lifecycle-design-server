@@ -2,138 +2,69 @@
 
 const mongoose = require('mongoose');
 const express = require('express');
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
-const User = require('../models/user');
+const Lead = require('../models/leads');
+const ScheduledEvent = require('../models/scheduled-events');
 
 const router = express.Router();
+const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
 
+router.use('/', jwtAuth);
+
+/* ========== POST/CREATE AN ITEM ========== */
 router.post('/', (req, res, next) => {
-  let { username, password, firstName = '', lastName = '' } = req.body;
+  const { 
+    firstName, 
+    lastName, 
+    homePhoneNumber, 
+    mobilePhoneNumber,
+    emailAddress,
+    lastContactedDate,
+    scheduledEvents,
+  } = req.body;
+  const userId = req.user._id;
 
-  const requiredFields = ['username', 'password'];
-  const missingField = requiredFields.find( field => !(field in req.body));
+  console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', req.user)
 
-  if (missingField) {
-    return res.status(422).json({
-      code: 422,
-      reason: 'ValidationError',
-      message: 'Missing field',
-      location: missingField
-    });
-  }
-
-  //Fields are type String
-  const stringFields = ['username', 'password', 'firstName', 'lastName'];
-  const noStringField = stringFields.find( field => 
-    field in req.body && typeof req.body[field] !== 'string'
-  );
-
-  if (noStringField) {
-    return res.status(422).json({
-      code: 422,
-      reason: 'ValidationError',
-      message: 'Incorrect field type: expected string',
-      location: noStringField
-    });
-  }
-  
-  //Username and Password should not have leading/trailing whitespace
-  // If the username and password aren't trimmed we give an error.  Users might
-  // expect that these will work without trimming (i.e. they want the password
-  // "foobar ", including the space at the end).  We need to reject such values
-  // explicitly so the users know what's happening, rather than silently
-  // trimming them and expecting the user to understand.
-  // We'll silently trim the other fields, because they aren't credentials used
-  // to log in, so it's less of a problem.
-  
-  const explicitlyTrimmedFields = ['username', 'password'];
-  
-  //find all non-Trimmed Fields
-  
-  const explicityTrimmedFields = ['username', 'password'];
-  const nonTrimmedField = explicityTrimmedFields.find(
-    field => req.body[field].trim() !== req.body[field]
-  );
-
-  if (nonTrimmedField) {
-    return res.status(422).json({
-      code: 422,
-      reason: 'ValidationError',
-      message: 'Cannot start or end with whitespace',
-      location: nonTrimmedField
-    });
-  }
-
-  //username should be a minimum of 1 character
-  const sizedFields = {
-    username: {
-      min: 1
-    },
-    password: {
-      min: 8,
-      max: 72
+  /***** Never trust users - validate input *****/
+  const requiredFields = ['firstName', 'lastName', 'mobilePhoneNumber', 'emailAddress'];
+  for (let field of requiredFields) {
+    if (!(field in req.body)) {
+      const err = new Error(`Missing ${field} in request body`);
+      err.status = 400;
+      return next(err);
     }
-  };
-
-  const tooSmallField = Object.keys(sizedFields).find(
-    field =>
-      'min' in sizedFields[field] &&
-            req.body[field].trim().length < sizedFields[field].min
-  );
-  const tooLargeField = Object.keys(sizedFields).find(
-    field =>
-      'max' in sizedFields[field] &&
-            req.body[field].trim().length > sizedFields[field].max
-  );
-
-  if (tooSmallField || tooLargeField) {
-    return res.status(422).json({
-      code: 422,
-      reason: 'ValidationError',
-      message: tooSmallField
-        ? `Must be at least ${sizedFields[tooSmallField]
-          .min} characters long`
-        : `Must be at most ${sizedFields[tooLargeField]
-          .max} characters long`,
-      location: tooSmallField || tooLargeField
-    });
   }
 
-  if (firstName) {
-    firstName = firstName.trim();
-  }  
+  const newLead = { 
+    firstName, 
+    lastName, 
+    homePhoneNumber, 
+    mobilePhoneNumber,
+    emailAddress,
+    lastContactedDate,
+    scheduledEvents,
+    userId  };
 
-  if (lastName) {
-    lastName = lastName.trim();
-  }  
+    console.log(newLead)
 
-  const newUserObject = {
-    username,
-    password,
-    firstName,
-    lastName
-  };
+  // if (newNote.folderId === '') {
+  //   delete newNote.folderId;
+  // }
 
-  return User
-    .hashPassword(password)
-    .then(digest => {
-      const newUser = {
-        username,
-        password: digest
-      };
-      return User.create(newUser);
-    })
+  Lead.create(newLead)
     .then(result => {
-      return res.status(201).location(`/api/users/${result.id}`).json(result);
+      res.location(`${req.originalUrl}/${result.id}`).status(201).json(result);
     })
     .catch(err => {
       if (err.code === 11000) {
-        err = new Error('The username already exists');
+        err = new Error('Lead name already exists');
         err.status = 400;
       }
       next(err);
     });
-  
-})
+});
 
 module.exports = router;

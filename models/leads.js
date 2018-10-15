@@ -4,11 +4,11 @@ const mongoose = require('mongoose');
 
 const leadSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  firstName: { type: String },
-  lastName: { type: String },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
   homePhoneNumber: { type: Number },
-  mobilePhoneNumber: { type: Number },
-  emailAddress: { type: String },
+  mobilePhoneNumber: { type: Number, required: true },
+  emailAddress: { type: String, required: true },
   lastContactedDate: { type: Date },
   scheduledEvents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ScheduledEvents' }],
 });

@@ -15,6 +15,7 @@ passport.use(jwtStrategy);
 
 const authRouter = require('./routes/auth');
 const usersRouter = require('./routes/users');
+const leadsRouter = require('./routes/leads');
 
 const { dbConnect } = require('./db/db-mongoose');
 
@@ -38,6 +39,7 @@ app.use(express.json());
 // Mount routers
 app.use('/api/users', usersRouter);
 app.use('/api/login', authRouter);
+app.use('/api/leads', leadsRouter);
 
 app.get('/api/cheeses', (req, res, next) => {
   res.json([

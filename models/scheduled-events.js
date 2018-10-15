@@ -35,4 +35,4 @@ scheduledEventsSchema.set( 'toObject', {
 });
 
 
-module.exports = mongoose.model('ScheduledEvents', scheduledEventsSchema);
+module.exports = mongoose.model('ScheduledEvent', scheduledEventsSchema);
