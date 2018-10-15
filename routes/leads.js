@@ -13,6 +13,43 @@ const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: tr
 
 router.use('/', jwtAuth);
 
+/* ========== GET/READ ALL ITEMS ========== */
+router.get('/', (req, res, next) => {
+  const { searchTerm } = req.query;
+  const userId = req.user._id;
+
+  let filter = { userId };
+
+  if (searchTerm) {
+    const re = new RegExp(searchTerm, 'i');
+    filter.$or = [
+      { 'firstName': re }, 
+      { 'lastName': re },
+      { 'homePhoneNumber': re },
+      { 'mobilePhoneNumber': re },
+      { 'emailAddress': re },
+    ];
+  }
+
+  // if (folderId) {
+  //   filter.folderId = folderId;
+  // }
+
+  // if (tagId) {
+  //   filter.tags = tagId;
+  // }
+
+  Lead.find(filter)
+    //.populate('tags')
+    .sort({ updatedAt: 'desc' })
+    .then(results => {
+      res.json(results);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
 /* ========== POST/CREATE AN ITEM ========== */
 router.post('/', (req, res, next) => {
   const { 
