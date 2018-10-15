@@ -10,7 +10,6 @@ const router = express.Router();
 router.post('/', (req, res, next) => {
   let { username, password, firstName = '', lastName = '' } = req.body;
 
-  //Need to memorize this
   const requiredFields = ['username', 'password'];
   const missingField = requiredFields.find( field => !(field in req.body));
 
@@ -55,16 +54,6 @@ router.post('/', (req, res, next) => {
   const nonTrimmedField = explicityTrimmedFields.find(
     field => req.body[field].trim() !== req.body[field]
   );
-
-
-  // const nonTrimmedField = explicitlyTrimmedFields.find( (field) => {
-  //   console.log('Req Body', req.body)
-    
-  //   let trimmedField = req.body[field].trim();
-  //   return trimmedField !== req.body[field]
-  // }
-  //   //field => req.body[field].trim() !== req.body[field]
-  // );
 
   if (nonTrimmedField) {
     return res.status(422).json({
@@ -130,9 +119,7 @@ router.post('/', (req, res, next) => {
     .then(digest => {
       const newUser = {
         username,
-        password: digest,
-        firstName,
-        lastName
+        password: digest
       };
       return User.create(newUser);
     })
