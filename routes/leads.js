@@ -17,16 +17,16 @@ router.use('/', jwtAuth);
 router.get('/', (req, res, next) => {
   const { searchTerm } = req.query;
   const userId = req.user._id;
-
   let filter = { userId };
 
-  if (searchTerm) {
+  //TODO Figure out how to search for PhoneNumber
+  if (searchTerm && typeof(searchTerm) === 'string') {
     const re = new RegExp(searchTerm, 'i');
     filter.$or = [
       { 'firstName': re }, 
       { 'lastName': re },
-      { 'homePhoneNumber': re },
-      { 'mobilePhoneNumber': re },
+      // { 'homePhoneNumber': Number(re) },
+      // { 'mobilePhoneNumber': re },
       { 'emailAddress': re },
     ];
   }
@@ -44,6 +44,32 @@ router.get('/', (req, res, next) => {
     .sort({ updatedAt: 'desc' })
     .then(results => {
       res.json(results);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+/* ========== GET/READ A SINGLE ITEM ========== */
+router.get('/:id', (req, res, next) => {
+  const { id } = req.params;
+  const userId = req.user._id;
+
+  /***** Never trust users - validate input *****/
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    const err = new Error('The `id` is not valid');
+    err.status = 400;
+    return next(err);
+  }
+
+  Lead.findOne({_id: id, userId})
+    // .populate('tags')
+    .then(result => {
+      if (result) {
+        res.json(result);
+      } else {
+        next();
+      }
     })
     .catch(err => {
       next(err);
