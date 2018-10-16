@@ -19,6 +19,9 @@ function validatePhone(phoneNumber) {
   // firstName, lastName, homePhoneNumber, mobilePhoneNumber, emailAddress,
   // lastContactedDate, scheduledEvents, userId  }
   let newPhoneNumber = '';
+  if (!phoneNumber) {
+    return;
+  }
 
   if (phoneNumber[0] === '1') {
     newPhoneNumber = phoneNumber.slice(1);
@@ -108,14 +111,21 @@ router.post('/', (req, res, next) => {
     scheduledEvents,
   } = req.body;
   const userId = req.user._id;
+  console.log(req.body)
 
   /***** Never trust users - validate input *****/
   const requiredFields = ['firstName', 'lastName', 'mobilePhoneNumber', 'emailAddress'];
   for (let field of requiredFields) {
     if (!(field in req.body)) {
-      const err = new Error(`Missing ${field} in request body`);
-      err.status = 400;
-      return next(err);
+      // const err = new Error(`Missing ${field} in request body`);
+      // err.status = 400;
+      return res.status(422).json({
+        code: 422,
+        reason: 'ValidationError',
+        message: 'Missing field',
+        location: field
+      });
+      // return next(err);
     }
   }
 
@@ -140,10 +150,18 @@ router.post('/', (req, res, next) => {
     const err = new Error('Invalid email address');
     err.status = 400;
     return next(err);
-  } else if (!validatePhone(homePhoneNumber) || !validatePhone(mobilePhoneNumber)) {
-    const err = new Error('Invalid phone number');
-    err.status = 400;
-    return next(err);
+  } else if (homePhoneNumber) {
+    if (!validatePhone(homePhoneNumber)) {
+      const err = new Error('Invalid home phone number');
+      err.status = 400;
+      return next(err);
+    }
+  } else if (mobilePhoneNumber) {
+    if (!validatePhone(mobilePhoneNumber)) {
+      const err = new Error('Invalid mobile phone number');
+      err.status = 400;
+      return next(err);
+    }
   }
 
   Lead.create(newLead)
