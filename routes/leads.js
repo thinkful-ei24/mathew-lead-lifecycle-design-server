@@ -15,9 +15,6 @@ const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: tr
 router.use('/', jwtAuth);
 
 function validatePhone(phoneNumber) {
-  //expected object: { 
-  // firstName, lastName, homePhoneNumber, mobilePhoneNumber, emailAddress,
-  // lastContactedDate, scheduledEvents, userId  }
   let newPhoneNumber = '';
   if (!phoneNumber) {
     return;
@@ -117,8 +114,6 @@ router.post('/', (req, res, next) => {
   const requiredFields = ['firstName', 'lastName', 'mobilePhoneNumber', 'emailAddress'];
   for (let field of requiredFields) {
     if (!(field in req.body)) {
-      // const err = new Error(`Missing ${field} in request body`);
-      // err.status = 400;
       return res.status(422).json({
         code: 422,
         reason: 'ValidationError',
@@ -151,12 +146,14 @@ router.post('/', (req, res, next) => {
     err.status = 400;
     return next(err);
   } else if (homePhoneNumber) {
+    console.log('home xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', homePhoneNumber)
     if (!validatePhone(homePhoneNumber)) {
       const err = new Error('Invalid home phone number');
       err.status = 400;
       return next(err);
     }
   } else if (mobilePhoneNumber) {
+    console.log('mobile oooooooooooooooooooooooooooooo', mobilePhoneNumber)
     if (!validatePhone(mobilePhoneNumber)) {
       const err = new Error('Invalid mobile phone number');
       err.status = 400;
