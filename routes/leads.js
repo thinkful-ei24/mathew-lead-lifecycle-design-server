@@ -106,6 +106,7 @@ router.post('/', (req, res, next) => {
     emailAddress,
     lastContactedDate,
     scheduledEvents,
+    leadNotes
   } = req.body;
   const userId = req.user._id;
   console.log(req.body)
