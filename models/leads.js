@@ -10,7 +10,7 @@ const leadSchema = new mongoose.Schema({
   mobilePhoneNumber: { type: Number, required: true },
   emailAddress: { type: String, required: true },
   lastContactedDate: { type: Date },
-  scheduledEvents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ScheduledEvents' }],
+  scheduledEvents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ScheduledEvent' }],
 });
 
 leadSchema.index({ firstName: 1, lastName: 1, userId: 1}, { unique: true });
@@ -25,6 +25,5 @@ leadSchema.set( 'toObject', {
     delete result.__v;
   }
 });
-
 
 module.exports = mongoose.model('Lead', leadSchema);

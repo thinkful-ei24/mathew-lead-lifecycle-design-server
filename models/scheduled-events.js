@@ -20,7 +20,7 @@ const scheduledEventsSchema = new mongoose.Schema({
   leadResponded: { type: Boolean }
 });
 
-scheduledEventsSchema.index({ userId: 1, leadId: 1, eventType: 1, dateAndTime: 1}, { unique: true });
+scheduledEventsSchema.index({ userId: 1, leadId: 1, eventType: 1, dateAndTime: 1});
 
 // Add `createdAt` and `updatedAt` fields
 scheduledEventsSchema.set('timestamps', true);

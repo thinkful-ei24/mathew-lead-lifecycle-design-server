@@ -129,7 +129,7 @@ router.post('/', (req, res, next) => {
   //  lastContactedDate: Must be a date
   //  scheduledEvents: Not sure yet
 
-  const newLead = { 
+  const newEvent = { 
     userId, 
     leadId, 
     eventType, 
@@ -158,14 +158,22 @@ router.post('/', (req, res, next) => {
   //     return next(err);
   //   }
   // }
+  let event; 
 
-  ScheduledEvent.create(newLead)
+  ScheduledEvent.create(newEvent)
+    .then(e => {event = e;})
+    .then(e => Lead.findOne({_id: leadId}))
+    .then(lead => {
+      console.log(lead)
+      lead.scheduledEvents.push(event);
+      return lead.save();
+    })
     .then(result => {
-      res.location(`${req.originalUrl}/${result.id}`).status(201).json(result);
+      res.location(`${req.originalUrl}/${event.id}`).status(201).json(event);
     })
     .catch(err => {
       if (err.code === 11000) {
-        err = new Error('Lead name already exists');
+        err = new Error('Scheduled Event already exists');
         err.status = 400;
       }
       next(err);

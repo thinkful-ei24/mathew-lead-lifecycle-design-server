@@ -60,7 +60,7 @@ router.get('/', (req, res, next) => {
   // }
 
   Lead.find(filter)
-    //.populate('tags')
+    .populate('scheduledEvents')
     .sort({ updatedAt: 'desc' })
     .then(results => {
       res.json(results);
@@ -83,7 +83,7 @@ router.get('/:id', (req, res, next) => {
   }
 
   Lead.findOne({_id: id, userId})
-    // .populate('tags')
+    .populate('scheduledEvents')
     .then(result => {
       if (result) {
         res.json(result);
@@ -105,7 +105,7 @@ router.post('/', (req, res, next) => {
     mobilePhoneNumber,
     emailAddress,
     lastContactedDate,
-    scheduledEvents,
+    scheduledEvents = [],
     leadNotes
   } = req.body;
   const userId = req.user._id;
