@@ -16,6 +16,7 @@ passport.use(jwtStrategy);
 const authRouter = require('./routes/auth');
 const usersRouter = require('./routes/users');
 const leadsRouter = require('./routes/leads');
+const scheduledEventsRouter = require('./routes/scheduled-events');
 
 const { dbConnect } = require('./db/db-mongoose');
 
@@ -40,7 +41,9 @@ app.use(express.json());
 app.use('/api/users', usersRouter);
 app.use('/api/login', authRouter);
 app.use('/api/leads', leadsRouter);
+app.use('/api/scheduledevents', scheduledEventsRouter);
 
+//TODO REMOVE
 app.get('/api/cheeses', (req, res, next) => {
   res.json([
     'Bath Blue',

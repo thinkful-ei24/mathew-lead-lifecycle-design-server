@@ -14,14 +14,13 @@ const mongoose = require('mongoose');
 const scheduledEventsSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   leadId: { type: mongoose.Schema.Types.ObjectId, ref: 'Lead', required: true },
-  eventType: { type: String },
-  date: { type: Date },
-  time: { type: Date },
+  eventType: { type: String, required: true },
+  dateAndTime: { type: Date, required: true },
   notes: { type: String },
   leadResponded: { type: Boolean }
 });
 
-scheduledEventsSchema.index({ firstName: 1, lastName: 1, userId: 1}, { unique: true });
+scheduledEventsSchema.index({ userId: 1, leadId: 1, eventType: 1, dateAndTime: 1}, { unique: true });
 
 // Add `createdAt` and `updatedAt` fields
 scheduledEventsSchema.set('timestamps', true);
