@@ -83,6 +83,8 @@ router.get('/:id', (req, res, next) => {
   }
 
   Lead.findOne({_id: id, userId})
+    //To find a Lead by scheduledEvents._id (like if you had a list of scheduled events)
+    // Lead.findOne({'scheduledEvents._id': mongoose.Types.ObjectId('5bca2e36e059f63edc89856c')})
     .populate('scheduledEvents')
     .then(result => {
       if (result) {
@@ -105,11 +107,11 @@ router.post('/', (req, res, next) => {
     mobilePhoneNumber,
     emailAddress,
     lastContactedDate,
-    scheduledEvents = [],
+    scheduledEvents,
     leadNotes
   } = req.body;
   const userId = req.user._id;
-  console.log(req.body)
+  
 
   /***** Never trust users - validate input *****/
   const requiredFields = ['firstName', 'lastName', 'mobilePhoneNumber', 'emailAddress'];

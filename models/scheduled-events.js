@@ -12,8 +12,8 @@ const mongoose = require('mongoose');
 //Valid leadResponded: true, false
 
 const scheduledEventsSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  leadId: { type: mongoose.Schema.Types.ObjectId, ref: 'Lead', required: true },
+  // userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  // leadId: { type: mongoose.Schema.Types.ObjectId, ref: 'Lead', required: true },
   eventType: { type: String, required: true },
   dateAndTime: { type: Date, required: true },
   notes: { type: String },
@@ -34,4 +34,5 @@ scheduledEventsSchema.set( 'toObject', {
 });
 
 
-module.exports = mongoose.model('ScheduledEvent', scheduledEventsSchema);
+// module.exports = mongoose.model('ScheduledEvent', scheduledEventsSchema);
+module.exports = scheduledEventsSchema;

@@ -1,6 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const scheduledEventsSchema = require('./scheduled-events')
 
 const leadSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -10,7 +11,7 @@ const leadSchema = new mongoose.Schema({
   mobilePhoneNumber: { type: Number, required: true },
   emailAddress: { type: String, required: true },
   lastContactedDate: { type: Date },
-  scheduledEvents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ScheduledEvent' }],
+  scheduledEvents: [scheduledEventsSchema],
 });
 
 leadSchema.index({ firstName: 1, lastName: 1, userId: 1}, { unique: true });
