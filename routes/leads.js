@@ -85,6 +85,7 @@ router.get('/:id', (req, res, next) => {
   Lead.findOne({_id: id, userId})
     //To find a Lead by scheduledEvents._id (like if you had a list of scheduled events)
     // Lead.findOne({'scheduledEvents._id': mongoose.Types.ObjectId('5bca2e36e059f63edc89856c')})
+    //Might also be helpful:  https://stackoverflow.com/questions/15686374/how-to-retrieve-parent-document-based-on-subdocument-values-in-mongoose
     .populate('scheduledEvents')
     .then(result => {
       if (result) {
