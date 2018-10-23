@@ -149,14 +149,16 @@ router.post('/', (req, res, next) => {
     const err = new Error('Invalid email address');
     err.status = 400;
     return next(err);
-  } else if (homePhoneNumber) {
+  }
+  if (homePhoneNumber) {
     console.log('home xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', homePhoneNumber)
     if (!validatePhone(homePhoneNumber)) {
       const err = new Error('Invalid home phone number');
       err.status = 400;
       return next(err);
     }
-  } else if (mobilePhoneNumber) {
+  }
+  if (mobilePhoneNumber) {
     console.log('mobile oooooooooooooooooooooooooooooo', mobilePhoneNumber)
     if (!validatePhone(mobilePhoneNumber)) {
       const err = new Error('Invalid mobile phone number');
