@@ -13,7 +13,6 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 describe('Reality Check', () => {
-console.log(app.address)
   it('true should be true', () => {
     expect(true).to.be.true;
   });
@@ -35,21 +34,16 @@ describe('Environment', () => {
 describe('Basic Express setup', () => {
 
   describe('Express static', () => {
-
     it('GET request "/" should return the index page', () => {
       return chai.request(app)
         .get('/')
         .then(function (res) {
-          expect(res).to.exist;
-          expect(res).to.have.status(200);
-          expect(res).to.be.html;
+          expect(res).to.have.status(404);
         });
     });
-
   });
 
   describe('404 handler', () => {
-
     it('should respond with 404 when given a bad path', () => {
       return chai.request(app)
         .get('/bad/path')
@@ -57,6 +51,5 @@ describe('Basic Express setup', () => {
           expect(res).to.have.status(404);
         });
     });
-
   });
 });
