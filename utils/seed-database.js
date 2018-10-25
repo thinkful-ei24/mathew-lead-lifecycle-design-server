@@ -3,6 +3,10 @@
 const mongoose = require('mongoose');
 
 const { DATABASE_URL } = require('../config');
+const { PRODUCTION_DATABASE_URL } = require('../config');
+
+//Change this variable to the database you want to seed
+const database_to_seed = PRODUCTION_DATABASE_URL;
 
 const Lead = require('../models/leads');
 const scheduledEventsSchema = require('../models/scheduled-events');
@@ -12,7 +16,7 @@ const { leads } = require('../db/data');
 const { scheduledEvents } = require('../db/data');
 const { users } = require('../db/data');
 
-mongoose.connect(DATABASE_URL, { useNewUrlParser: true})
+mongoose.connect(database_to_seed, { useNewUrlParser: true})
   .then( () => mongoose.connection.db.dropDatabase())
   .then( () => {
     return Promise.all([

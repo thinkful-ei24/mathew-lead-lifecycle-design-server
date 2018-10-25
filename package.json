@@ -7,7 +7,7 @@
     "start": "nodemon index.js",
     "mocha": "mocha --exit --file test/setup.test.js '!(node_modules)/**/*test.js'",
     "mocha-exit0": "mocha --exit --file test/setup.test.js '!(node_modules)/**/*test.js' || true",
-    "test": "nodemon --exec npm run mocha-exit0",
+    "test": "cross-env NODE_ENV=test mocha",
     "cover": "nodemon --exec nyc --reporter=lcov --reporter=text-summary npm run mocha-exit0",
     "heroku": "node index.js",
     "travis": "npm run mocha"
@@ -17,6 +17,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.4",
+    "cross-env": "^5.2.0",
     "dotenv": "^6.1.0",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.3.0",
