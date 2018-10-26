@@ -28,11 +28,13 @@ app.use(
   })
 );
 
+// app.options('*', cors());
 app.use(
   cors({
     origin: CLIENT_ORIGIN
   })
 );
+
 
 // Parse request body
 app.use(express.json());
@@ -43,29 +45,6 @@ app.use('/api/login', authRouter);
 app.use('/api/leads', leadsRouter);
 app.use('/api/scheduledevents', scheduledEventsRouter);
 
-//TODO REMOVE
-app.get('/api/cheeses', (req, res, next) => {
-  res.json([
-    'Bath Blue',
-    'Barkham Blue',
-    'Buxton Blue',
-    'Cheshire Blue',
-    'Devon Blue',
-    'Dorset Blue Vinney',
-    'Dovedale',
-    'Exmoor Blue',
-    'Harbourne Blue',
-    'Lanark Blue',
-    'Lymeswold',
-    'Oxford Blue',
-    'Shropshire Blue',
-    'Stichelton',
-    'Stilton',
-    'Blue Wensleydale',
-    'Yorkshire Blue'
-  ]);
-  next();
-});
 
 // Custom Error Handler
 app.use((err, req, res, next) => {
